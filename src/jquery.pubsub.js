@@ -119,14 +119,18 @@
                 var subs = clone(subscriptions[topic]);
                 delete subscriptions[topic];
                 $.each(subs, function(i, subscriptions) {
-                    subscriptions[2].call(subscriptions[1], topic);
+                    if($.isFunction(subscriptions[2])) {
+                        subscriptions[2].call(subscriptions[1], topic);
+                    }
                 });
             } else {
                 // Otherwise a callback is specified; iterate through this topic to find the correct callback
                 $.each(currTopic, function (i, subscription) {
                     if (subscription[0] === callback && subscription[1] === context) {
                         currTopic.splice(i, 1);
-                        subscription[2].call(subscription[1], topic)
+                        if($.isFunction(subscription[2])) {
+                            subscription[2].call(subscription[1], topic);
+                        }
                         return false; // break
                     }
                 });
